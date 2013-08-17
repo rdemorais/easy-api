@@ -12,6 +12,9 @@
                            http://www.springframework.org/schema/tx
                            http://www.springframework.org/schema/tx/spring-tx.xsd">
 
+	<import resource="classpath:/META-INF/app-formgen-context.xml"/>
+
+
 	<!-- Configuração de acesso ao banco -->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		p:driverClassName="org.postgresql.Driver" p:url="jdbc:postgresql://localhost:5432/crud"
