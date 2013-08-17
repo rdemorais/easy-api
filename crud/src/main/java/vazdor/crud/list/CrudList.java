@@ -4,6 +4,7 @@ import java.util.List;
 
 public class CrudList {
 	private String id;
+	private String crudId;
 	private List<Column> columns;
 	private List<Row> rows;
 
@@ -12,6 +13,12 @@ public class CrudList {
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+	public String getCrudId() {
+		return crudId;
+	}
+	public void setCrudId(String crudId) {
+		this.crudId = crudId;
 	}
 	public List<Column> getColumns() {
 		return columns;
