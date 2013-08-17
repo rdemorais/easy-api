@@ -22,19 +22,16 @@ import vazdor.form.FormMapping;
 public class DFormGenerator implements FormGenerator<String> {
 
 	private DiscoverHTMLType discoverHtmlType = new DiscoverHTMLType();
-	private String action;
-	private String method;
 	
-	public DFormGenerator(String action, String method) {
-		this.action = action;
-		this.method = method;
+	public DFormGenerator() {
+		
 	}
 	
-	public String gen(Serializable pojo, FormMapping formM) {
+	public String gen(Serializable pojo, FormMapping formM, String action, String method) {
 		
 		Map<String, String> formMap = formM.mapForm();
 		Field fields[] = pojo.getClass().getDeclaredFields();
-		StringBuffer jsonForm = new StringBuffer(inicio());
+		StringBuffer jsonForm = new StringBuffer(inicio(action, method));
 		for (int i = 0; i < fields.length; i++) {
 			try {
 				Field f = fields[i];
@@ -65,7 +62,7 @@ public class DFormGenerator implements FormGenerator<String> {
 		return jsonForm.toString();
 	}
 	
-	private String inicio() {
+	private String inicio(String action, String method) {
 		return "{'action': '" + action + "', 'method': '"+method+"', 'html': [";
 	}
 	

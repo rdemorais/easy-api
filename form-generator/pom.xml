@@ -8,4 +8,5 @@
   <artifactId>form-generator</artifactId>
   <name>Form Generator</name>
   <description>Componente para geração de formulários a partir de um Serializable</description>
+  <version>1.0</version>
 </project>
