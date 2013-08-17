@@ -7,8 +7,27 @@ package vazdor.crud.list;
  *
  */
 public class Column {
+	private String id;
 	private String nameColumn;
 	private int ord;
+	
+	public Column() {
+	}
+	
+	public Column(String id, String nameColumn, int ord) {
+		this.id = id;
+		this.nameColumn = nameColumn;
+		this.ord = ord;
+	}
+	
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	public String getNameColumn() {
 		return nameColumn;
 	}
