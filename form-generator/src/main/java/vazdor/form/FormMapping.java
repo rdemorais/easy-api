@@ -1,6 +1,5 @@
 package vazdor.form;
 
-import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -12,5 +11,5 @@ import java.util.Map;
  *
  */
 public interface FormMapping {
-	public abstract Map<String, String> mapForm(Serializable pojo);
+	public abstract Map<String, String> mapForm();
 }

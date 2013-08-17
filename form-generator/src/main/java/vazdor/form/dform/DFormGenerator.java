@@ -32,7 +32,7 @@ public class DFormGenerator implements FormGenerator<String> {
 	
 	public String gen(Serializable pojo, FormMapping formM) {
 		
-		Map<String, String> formMap = formM.mapForm(pojo);
+		Map<String, String> formMap = formM.mapForm();
 		Field fields[] = pojo.getClass().getDeclaredFields();
 		StringBuffer jsonForm = new StringBuffer(inicio());
 		for (int i = 0; i < fields.length; i++) {
