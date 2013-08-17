@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context 
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/jdbc 
+                           http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!-- Configuração de acesso ao banco -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		p:driverClassName="org.postgresql.Driver" p:url="jdbc:postgresql://localhost:5432/crud"
+		p:username="postgres" p:password="serenaya" p:initialSize="5"
+		p:maxActive="10">
+	</bean>
+
+	<bean
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+		id="entityManagerFactory">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<context:component-scan base-package="vazdor.crud">
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Repository" />
+	</context:component-scan>
+
+	<bean class="org.springframework.orm.jpa.JpaTransactionManager"
+		id="transactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+
+	<tx:annotation-driven />
+
+	<context:spring-configured />
+	<context:annotation-config />
+
+
+	<bean id="crudRegister" class="vazdor.crud.impl.CRUDRegisterImpl">
+		<property name="mapCruds">
+			<props>
+				<prop key="crud1">vazdor.crud.CrudTest</prop>
+			</props>
+		</property>
+		<property name="mapFormMap">
+			<props>
+				<prop key="crud1">vazdor.crud.CrudTestFormMapping</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="dformManager" class="vazdor.crud.impl.DFormManagerImpl" />
+</beans>

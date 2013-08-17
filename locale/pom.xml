@@ -7,6 +7,5 @@
   </parent>
   <artifactId>locale</artifactId>
   <name>Locale</name>
-  <groupId>serenaya.comp.locale</groupId>
   <version>1.0</version>
 </project>
