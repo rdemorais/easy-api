@@ -10,6 +10,7 @@
 		<module>locale</module>
 		<module>sentinela</module>
 		<module>flow</module>
+		<module>form-generator</module>
 	</modules>
 	<properties>
 		<spring-version>3.2.2.RELEASE</spring-version>
