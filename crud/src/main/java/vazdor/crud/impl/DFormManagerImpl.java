@@ -3,6 +3,8 @@ package vazdor.crud.impl;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -81,10 +83,16 @@ public class DFormManagerImpl implements DFormManager {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
 		}
 	}
 	
-	private void mergeCrud(Serializable crudFromDB, Serializable crud) throws IllegalArgumentException, IllegalAccessException {
+	private void mergeCrud(Serializable crudFromDB, Serializable crud) throws IllegalArgumentException, IllegalAccessException, NoSuchMethodException, SecurityException, InvocationTargetException {
 		Field fieldsDB[] = crudFromDB.getClass().getDeclaredFields();
 		Field fDB = null;
 		for (Field field : fieldsDB) {
@@ -102,6 +110,32 @@ public class DFormManagerImpl implements DFormManager {
 				field.set(crud, fDB.get(crudFromDB));
 			}
 		}
+		
+		if(!crudFromDB.getClass().isAssignableFrom(crud.getClass())){
+	        return;
+	    }
+
+	    Method[] methods = crudFromDB.getClass().getMethods();
+
+	    for(Method fromMethod: methods){
+	        if(fromMethod.getDeclaringClass().equals(crudFromDB.getClass())
+	                && fromMethod.getName().startsWith("get")){
+
+	            String fromName = fromMethod.getName();
+	            String toName = fromName.replace("get", "set");
+	            String toNameGet = fromName;
+
+                Method toMetod = crud.getClass().getMethod(toName, fromMethod.getReturnType());
+                Method toMethodGet = crud.getClass().getMethod(toNameGet);
+                
+                Object valueGetCrud = toMethodGet.invoke(crud, (Object[])null);
+                
+                Object value = fromMethod.invoke(crudFromDB, (Object[])null);
+                if(value != null && valueGetCrud == null){
+                    toMetod.invoke(crud, value);
+                }
+	        }
+	    }
 	}
 
 	public CrudList list(String idCrud, int offset, int max) {
