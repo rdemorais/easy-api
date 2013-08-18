@@ -8,6 +8,7 @@ import javax.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import vazdor.crud.CRUDRegister;
+import vazdor.crud.CrudListManager;
 import vazdor.crud.DFormManager;
 import vazdor.form.FormGenerator;
 
@@ -19,10 +20,19 @@ public class DFormManagerImpl implements DFormManager {
 	@Autowired
 	private FormGenerator<String> dformGenerator;
 	
+	@Autowired
+	private CrudListManager crudListManager;
+	
 	@PersistenceContext
 	protected EntityManager em;
 	
 	public String list(String idCrud) {
+		try {
+			Class<?> clazz = crudRegister.lookupCrud(idCrud);
+			
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 

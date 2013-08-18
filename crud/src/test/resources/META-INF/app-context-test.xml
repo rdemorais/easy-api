@@ -58,4 +58,5 @@
 	</bean>
 
 	<bean id="dformManager" class="vazdor.crud.impl.DFormManagerImpl" />
+	<bean id="crudListManager" class="vazdor.crud.impl.CrudListManagerImpl" />
 </beans>
