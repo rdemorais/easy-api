@@ -2,6 +2,10 @@ package vazdor.crud;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
+
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class DFormManagerTest {
 	
 	private String expected = "{'action': 'action', 'method': 'post', 'html': [{'name': 'nome', 'id': 'nome', 'caption': 'Nome teste', 'type': 'input', 'value': ''},{'name': 'endereco', 'id': 'endereco', 'caption': 'Digite o endereco', 'type': 'input', 'value': ''}]}";
+	private String jsonToCreate = "{\"nome\":\"nome codigo\",\"endereco\":\"endereco do codigo\"}";
 	
 	@Autowired
 	private DFormManager dFormManager;
@@ -30,5 +35,10 @@ public class DFormManagerTest {
 	@Test
 	public void testList() {
 		System.out.println(dFormManager.list("crud1", 0, 0));
+	}
+	
+	@Test
+	public void testCreate() throws JsonGenerationException, JsonMappingException, IOException {
+		dFormManager.create("crud1", jsonToCreate);
 	}
 }
