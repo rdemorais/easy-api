@@ -32,4 +32,9 @@ public class CrudList {
 	public void setRows(List<ColumnRow> rows) {
 		this.rows = rows;
 	}
+	@Override
+	public String toString() {
+		return "CrudList [id=" + id + ", crudId=" + crudId + ", columns="
+				+ columns + ", rows=" + rows + "]";
+	}
 }

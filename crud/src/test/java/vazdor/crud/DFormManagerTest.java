@@ -29,6 +29,6 @@ public class DFormManagerTest {
 	
 	@Test
 	public void testList() {
-		dFormManager.list("crud1");
+		System.out.println(dFormManager.list("crud1", 0, 0));
 	}
 }

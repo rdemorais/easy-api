@@ -31,12 +31,12 @@ public class DFormManagerImpl implements DFormManager {
 	@PersistenceContext
 	protected EntityManager em;
 	
-	public CrudList list(String idCrud) {
+	public CrudList list(String idCrud, int offset, int max) {
 		try {
 			Class<?> clazz = crudRegister.lookupCrud(idCrud);
 			FormMapping formMap = crudRegister.lookupFormMapping(idCrud);
 			List<Column> cols = crudListManager.extractColumnsFromCrud(clazz, formMap.mapForm());
-			List<ColumnRow> rows = crudListManager.loadRows(clazz, cols, 0, 0);
+			List<ColumnRow> rows = crudListManager.loadRows(clazz, cols, offset, max);
 			
 			CrudList crudList = new CrudList();
 			crudList.setCrudId(idCrud);

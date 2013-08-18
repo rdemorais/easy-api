@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Tuple;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -22,7 +23,7 @@ public class CrudListManagerImpl implements CrudListManager {
 	@PersistenceContext
 	protected EntityManager em;
 	
-	public List<ColumnRow> loadRows(Class<?> crud, List<Column> cols, int from, int to) {
+	public List<ColumnRow> loadRows(Class<?> crud, List<Column> cols, int offset, int max) {
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<Tuple> criteria = builder.createTupleQuery();
 		Root<?> crudRoot = criteria.from(crud);
@@ -30,8 +31,18 @@ public class CrudListManagerImpl implements CrudListManager {
 		for (Column column : cols) {
 			criteria.multiselect(crudRoot.get(column.getId()));
 		}
+		List<Tuple> tupleResult;
 		
-		List<Tuple> tupleResult = em.createQuery(criteria).getResultList();
+		TypedQuery<Tuple> tq = em.createQuery(criteria);
+		
+		if(offset > 0) {
+			tq.setFirstResult(offset);
+		}
+		if(max > 0) {
+			tq.setMaxResults(max);
+		}
+		
+		tupleResult = tq.getResultList();
 
 		ColumnRow row;
 		List<ColumnRow> rows = new ArrayList<ColumnRow>();
@@ -46,13 +57,6 @@ public class CrudListManagerImpl implements CrudListManager {
 		return rows;
 	}
 	
-	/**
-	 * Extrai as colunas marcadas com a anotação {@link CrudListColumn}
-	 * 
-	 * @param crud
-	 * @param mapForm
-	 * @return
-	 */
 	public List<Column> extractColumnsFromCrud(Class<?> crud, Map<String, String> mapForm) {
 		List<Column> cols = new ArrayList<Column>();
 		Field fields[] = crud.getDeclaredFields();

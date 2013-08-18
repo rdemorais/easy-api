@@ -16,4 +16,9 @@ public class ColumnRow {
 	public void setColumn(Column column) {
 		this.column = column;
 	}
+	@Override
+	public String toString() {
+		return "ColumnRow [value=" + value + ", column=" + column.getId() + "]";
+	}
+	
 }
