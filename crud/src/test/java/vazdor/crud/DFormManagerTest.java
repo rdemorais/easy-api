@@ -47,4 +47,9 @@ public class DFormManagerTest {
 	public void testUpdate() {
 		dFormManager.update("crud1", jsonToUpdate, 32768L);
 	}
+	
+	//@Test
+	public void testDelete() {
+		dFormManager.delete("crud1", 1L);
+	}
 }

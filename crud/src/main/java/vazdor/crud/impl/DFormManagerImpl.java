@@ -52,6 +52,7 @@ public class DFormManagerImpl implements DFormManager {
 			Class<?> clazz = crudRegister.lookupCrud(idCrud);
 			Serializable crud = (Serializable) mapper.readValue(jsonForm, clazz);
 			em.persist(crud);
+			em.flush();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (JsonParseException e) {
@@ -71,6 +72,7 @@ public class DFormManagerImpl implements DFormManager {
 			Serializable crudFromDB = (Serializable) em.find(clazz, pk);
 			mergeCrud(crudFromDB, crud);
 			em.merge(crud);
+			em.flush();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (JsonParseException e) {
@@ -92,50 +94,16 @@ public class DFormManagerImpl implements DFormManager {
 		}
 	}
 	
-	private void mergeCrud(Serializable crudFromDB, Serializable crud) throws IllegalArgumentException, IllegalAccessException, NoSuchMethodException, SecurityException, InvocationTargetException {
-		Field fieldsDB[] = crudFromDB.getClass().getDeclaredFields();
-		Field fDB = null;
-		for (Field field : fieldsDB) {
-			if(field.isAnnotationPresent(Id.class)) {
-				fDB = field;
-				fDB.setAccessible(true);
-				break;
-			}
+	@Transactional
+	public void delete(String idCrud, Serializable pk) {
+		try {
+			Class<?> clazz = crudRegister.lookupCrud(idCrud);
+			Serializable crudFromDB = (Serializable) em.find(clazz, pk);
+			em.remove(crudFromDB);
+			em.flush();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
 		}
-		Field fieldsForm[] = crud.getClass().getDeclaredFields();
-		for (Field field : fieldsForm) {
-			if(field.getName().equals(fDB.getName())) {
-				field.setAccessible(true);
-				
-				field.set(crud, fDB.get(crudFromDB));
-			}
-		}
-		
-		if(!crudFromDB.getClass().isAssignableFrom(crud.getClass())){
-	        return;
-	    }
-
-	    Method[] methods = crudFromDB.getClass().getMethods();
-
-	    for(Method fromMethod: methods){
-	        if(fromMethod.getDeclaringClass().equals(crudFromDB.getClass())
-	                && fromMethod.getName().startsWith("get")){
-
-	            String fromName = fromMethod.getName();
-	            String toName = fromName.replace("get", "set");
-	            String toNameGet = fromName;
-
-                Method toMetod = crud.getClass().getMethod(toName, fromMethod.getReturnType());
-                Method toMethodGet = crud.getClass().getMethod(toNameGet);
-                
-                Object valueGetCrud = toMethodGet.invoke(crud, (Object[])null);
-                
-                Object value = fromMethod.invoke(crudFromDB, (Object[])null);
-                if(value != null && valueGetCrud == null){
-                    toMetod.invoke(crud, value);
-                }
-	        }
-	    }
 	}
 
 	public CrudList list(String idCrud, int offset, int max) {
@@ -190,5 +158,51 @@ public class DFormManagerImpl implements DFormManager {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	private void mergeCrud(Serializable crudFromDB, Serializable crud) throws IllegalArgumentException, IllegalAccessException, NoSuchMethodException, SecurityException, InvocationTargetException {
+		Field fieldsDB[] = crudFromDB.getClass().getDeclaredFields();
+		Field fDB = null;
+		for (Field field : fieldsDB) {
+			if(field.isAnnotationPresent(Id.class)) {
+				fDB = field;
+				fDB.setAccessible(true);
+				break;
+			}
+		}
+		Field fieldsForm[] = crud.getClass().getDeclaredFields();
+		for (Field field : fieldsForm) {
+			if(field.getName().equals(fDB.getName())) {
+				field.setAccessible(true);
+				
+				field.set(crud, fDB.get(crudFromDB));
+			}
+		}
+		
+		if(!crudFromDB.getClass().isAssignableFrom(crud.getClass())){
+	        return;
+	    }
+
+	    Method[] methods = crudFromDB.getClass().getMethods();
+
+	    for(Method fromMethod: methods){
+	        if(fromMethod.getDeclaringClass().equals(crudFromDB.getClass())
+	                && fromMethod.getName().startsWith("get")){
+
+	            String fromName = fromMethod.getName();
+	            String toName = fromName.replace("get", "set");
+	            String toNameGet = fromName;
+
+                Method toMetod = crud.getClass().getMethod(toName, fromMethod.getReturnType());
+                Method toMethodGet = crud.getClass().getMethod(toNameGet);
+                
+                Object valueGetCrud = toMethodGet.invoke(crud, (Object[])null);
+                
+                Object value = fromMethod.invoke(crudFromDB, (Object[])null);
+                if(value != null && valueGetCrud == null){
+                    toMetod.invoke(crud, value);
+                }
+	        }
+	    }
 	}
 }
