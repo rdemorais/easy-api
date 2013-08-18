@@ -2,9 +2,11 @@ package vazdor.crud.impl;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Id;
 import javax.persistence.PersistenceContext;
 
 import org.codehaus.jackson.JsonParseException;
@@ -59,6 +61,49 @@ public class DFormManagerImpl implements DFormManager {
 		}
 	}
 	
+	@Transactional
+	public void update(String idCrud, String jsonForm, Serializable pk) {
+		try {
+			Class<?> clazz = crudRegister.lookupCrud(idCrud);
+			Serializable crud = (Serializable) mapper.readValue(jsonForm, clazz);
+			Serializable crudFromDB = (Serializable) em.find(clazz, pk);
+			mergeCrud(crudFromDB, crud);
+			em.merge(crud);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void mergeCrud(Serializable crudFromDB, Serializable crud) throws IllegalArgumentException, IllegalAccessException {
+		Field fieldsDB[] = crudFromDB.getClass().getDeclaredFields();
+		Field fDB = null;
+		for (Field field : fieldsDB) {
+			if(field.isAnnotationPresent(Id.class)) {
+				fDB = field;
+				fDB.setAccessible(true);
+				break;
+			}
+		}
+		Field fieldsForm[] = crud.getClass().getDeclaredFields();
+		for (Field field : fieldsForm) {
+			if(field.getName().equals(fDB.getName())) {
+				field.setAccessible(true);
+				
+				field.set(crud, fDB.get(crudFromDB));
+			}
+		}
+	}
+
 	public CrudList list(String idCrud, int offset, int max) {
 		try {
 			Class<?> clazz = crudRegister.lookupCrud(idCrud);

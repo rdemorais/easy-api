@@ -44,4 +44,10 @@ public class CrudTest implements Serializable {
 	public void setEndereco(String endereco) {
 		this.endereco = endereco;
 	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
 }

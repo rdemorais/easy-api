@@ -18,6 +18,7 @@ public class DFormManagerTest {
 	
 	private String expected = "{'action': 'action', 'method': 'post', 'html': [{'name': 'nome', 'id': 'nome', 'caption': 'Nome teste', 'type': 'input', 'value': ''},{'name': 'endereco', 'id': 'endereco', 'caption': 'Digite o endereco', 'type': 'input', 'value': ''}]}";
 	private String jsonToCreate = "{\"nome\":\"nome codigo\",\"endereco\":\"endereco do codigo\"}";
+	private String jsonToUpdate = "{\"nome\":\"nome up\",\"endereco\":\"endereco up\"}";
 	
 	@Autowired
 	private DFormManager dFormManager;
@@ -40,5 +41,10 @@ public class DFormManagerTest {
 	@Test
 	public void testCreate() throws JsonGenerationException, JsonMappingException, IOException {
 		dFormManager.create("crud1", jsonToCreate);
+	}
+	
+	@Test
+	public void testUpdate() {
+		dFormManager.update("crud1", jsonToUpdate, 1L);
 	}
 }
