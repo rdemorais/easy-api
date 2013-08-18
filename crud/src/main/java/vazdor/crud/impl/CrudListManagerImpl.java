@@ -12,6 +12,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Selection;
 
 import vazdor.crud.CrudListColumn;
 import vazdor.crud.CrudListManager;
@@ -27,10 +28,11 @@ public class CrudListManagerImpl implements CrudListManager {
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<Tuple> criteria = builder.createTupleQuery();
 		Root<?> crudRoot = criteria.from(crud);
-		
+		List<Selection<?>> selectCols = new ArrayList<Selection<?>>();
 		for (Column column : cols) {
-			criteria.multiselect(crudRoot.get(column.getId()));
+			selectCols.add(crudRoot.get(column.getId()));
 		}
+		criteria.multiselect(selectCols);
 		List<Tuple> tupleResult;
 		
 		TypedQuery<Tuple> tq = em.createQuery(criteria);

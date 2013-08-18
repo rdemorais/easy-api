@@ -26,6 +26,7 @@ public class CrudTest implements Serializable {
 	@CrudListColumn
 	private String nome;
 	
+	@CrudListColumn
 	private String endereco;
 	
 	public String getNome() {
