@@ -7,25 +7,43 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import vazdor.crud.CrudListColumn;
+import vazdor.crud.CrudListManager;
 import vazdor.crud.list.Column;
-import vazdor.crud.list.Row;
+import vazdor.crud.list.ColumnRow;
 
-public class CrudListManagerImpl {
+public class CrudListManagerImpl implements CrudListManager {
 	
 	@PersistenceContext
 	protected EntityManager em;
 	
-	public List<Row> loadRows(Class<?> crud, List<Column> cols, int from, int to) {
+	public List<ColumnRow> loadRows(Class<?> crud, List<Column> cols, int from, int to) {
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<?> criteria = builder.createQuery(crud);
-		TypedQuery<?> q = em.createQuery(criteria);
-		System.out.println(q.getResultList());
-		return null;
+		CriteriaQuery<Tuple> criteria = builder.createTupleQuery();
+		Root<?> crudRoot = criteria.from(crud);
+		
+		for (Column column : cols) {
+			criteria.multiselect(crudRoot.get(column.getId()));
+		}
+		
+		List<Tuple> tupleResult = em.createQuery(criteria).getResultList();
+
+		ColumnRow row;
+		List<ColumnRow> rows = new ArrayList<ColumnRow>();
+		for (Tuple tuple : tupleResult) {
+			for (int i = 0; i < cols.size(); i++) {
+				row = new ColumnRow();
+				row.setValue((String)tuple.get(i));
+				row.setColumn(cols.get(i));
+				rows.add(row);	
+			}
+		}
+		return rows;
 	}
 	
 	/**

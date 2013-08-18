@@ -23,6 +23,7 @@ public class CrudTest implements Serializable {
 	@FormGenExcludeField
 	private Long id;
 	
+	@CrudListColumn
 	private String nome;
 	
 	private String endereco;

@@ -27,4 +27,8 @@ public class DFormManagerTest {
 		System.out.println(dFormManager.load("crud1", 1L, "ac", "post"));
 	}
 	
+	@Test
+	public void testList() {
+		dFormManager.list("crud1");
+	}
 }

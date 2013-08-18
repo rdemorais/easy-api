@@ -6,7 +6,7 @@ public class CrudList {
 	private String id;
 	private String crudId;
 	private List<Column> columns;
-	private List<Row> rows;
+	private List<ColumnRow> rows;
 
 	public String getId() {
 		return id;
@@ -26,10 +26,10 @@ public class CrudList {
 	public void setColumns(List<Column> columns) {
 		this.columns = columns;
 	}
-	public List<Row> getRows() {
+	public List<ColumnRow> getRows() {
 		return rows;
 	}
-	public void setRows(List<Row> rows) {
+	public void setRows(List<ColumnRow> rows) {
 		this.rows = rows;
 	}
 }

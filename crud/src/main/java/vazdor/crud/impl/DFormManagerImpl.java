@@ -1,6 +1,7 @@
 package vazdor.crud.impl;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -10,7 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import vazdor.crud.CRUDRegister;
 import vazdor.crud.CrudListManager;
 import vazdor.crud.DFormManager;
+import vazdor.crud.list.Column;
+import vazdor.crud.list.CrudList;
+import vazdor.crud.list.ColumnRow;
 import vazdor.form.FormGenerator;
+import vazdor.form.FormMapping;
 
 public class DFormManagerImpl implements DFormManager {
 
@@ -26,11 +31,24 @@ public class DFormManagerImpl implements DFormManager {
 	@PersistenceContext
 	protected EntityManager em;
 	
-	public String list(String idCrud) {
+	public CrudList list(String idCrud) {
 		try {
 			Class<?> clazz = crudRegister.lookupCrud(idCrud);
+			FormMapping formMap = crudRegister.lookupFormMapping(idCrud);
+			List<Column> cols = crudListManager.extractColumnsFromCrud(clazz, formMap.mapForm());
+			List<ColumnRow> rows = crudListManager.loadRows(clazz, cols, 0, 0);
 			
+			CrudList crudList = new CrudList();
+			crudList.setCrudId(idCrud);
+			crudList.setColumns(cols);
+			crudList.setRows(rows);
+			
+			return crudList;
 		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
 		return null;
