@@ -2,12 +2,11 @@ package vazdor.form.dform;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.Map;
 
 import vazdor.form.DiscoverHTMLType;
 import vazdor.form.FormGenExcludeField;
+import vazdor.form.FormGenHTMLConfig;
 import vazdor.form.FormGenerator;
-import vazdor.form.FormMapping;
 
 /**
  * Recebe um {@link Serializable} e, via reflection, obtem os campos e gera um
@@ -27,20 +26,31 @@ public class DFormGenerator implements FormGenerator<String> {
 		
 	}
 	
-	public String gen(Serializable pojo, FormMapping formM, String action, String method) {
+	public String gen(Serializable pojo, String action, String method) {
 		
-		Map<String, String> formMap = formM.mapForm();
 		Field fields[] = pojo.getClass().getDeclaredFields();
 		StringBuffer jsonForm = new StringBuffer(inicio(action, method));
+		String friendlyName = "";
+		FormGenHTMLConfig htmlConfig = null;
+		
 		for (int i = 0; i < fields.length; i++) {
 			try {
 				Field f = fields[i];
 				if(!f.isAnnotationPresent(FormGenExcludeField.class)) {
 					f.setAccessible(true);
+					if(f.isAnnotationPresent(FormGenHTMLConfig.class)) {
+						htmlConfig = f.getAnnotation(FormGenHTMLConfig.class);
+						friendlyName = htmlConfig.friendlyName();
+					}
 					String name = f.getName();
 					String id = f.getName();
-					String caption = formMap.get(f.getName());
-					String type = discoverHtmlType.discover(f.getType());
+					String caption;
+					if(!friendlyName.equals("")) {
+						caption = friendlyName;
+					}else {
+						caption = f.getName();
+					}
+					String type = discoverHtmlType.discover(htmlConfig, f.getType());
 					String value = "";
 					if(f.get(pojo) != null) {
 						value = f.get(pojo).toString();					
@@ -50,7 +60,9 @@ public class DFormGenerator implements FormGenerator<String> {
 					
 					if(i < fields.length && i != fields.length -1) {
 						jsonForm.append(",");
-					}					
+					}
+					htmlConfig = null;
+					friendlyName = "";
 				}
 			} catch (IllegalArgumentException e) {
 				e.printStackTrace();

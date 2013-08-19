@@ -7,20 +7,23 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import vazdor.form.FormGenerator;
-
-import static org.junit.Assert.*;
+import vazdor.form.HTMLFieldsPojo;
 
 @ContextConfiguration("/META-INF/app-formgen-context.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
 public class DFormGeneratorTest {
-	
-	String expected = "{'action': 'ac', 'method': 'post', 'html': [{'name': 'nome', 'id': 'nome', 'caption': 'Nome do Pojo', 'type': 'input', 'value': ''},{'name': 'telefone', 'id': 'telefone', 'caption': 'Fone', 'type': 'input', 'value': ''}]}";
 	
 	@Autowired
 	private FormGenerator<String> dformGenerator;
 	
 	@Test
 	public void testGFormGen() {
-		assertEquals(expected, dformGenerator.gen(new PojoTest(), new PojoTestFormMapping(), "ac", "post"));
+		HTMLFieldsPojo pojo = new HTMLFieldsPojo();
+		pojo.setInputField("value input");
+		pojo.setRadio(true);
+		pojo.setTextArea("text area value");
+		pojo.setToIgnore("");
+		
+		System.out.println(dformGenerator.gen(pojo, "ac", "get"));
 	}
 }

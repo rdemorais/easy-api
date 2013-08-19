@@ -11,5 +11,5 @@ import java.io.Serializable;
  * @param <T>
  */
 public interface FormGenerator<T> {
-	public T gen(Serializable pojo, FormMapping formM, String action, String method);
+	public T gen(Serializable pojo, String action, String method);
 }
