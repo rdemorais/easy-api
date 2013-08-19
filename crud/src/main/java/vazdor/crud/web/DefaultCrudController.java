@@ -29,8 +29,10 @@ public class DefaultCrudController {
 	
 	@RequestMapping(value="/new/{idCrud}", method=RequestMethod.GET)
 	public String blankForm(@PathVariable String idCrud, Model model) {
+		System.out.println(dformManager);
 		String dform = dformManager.blankForm(idCrud, "", "post");
 		model.addAttribute("dform", dform);
+		System.out.println("Call");
 		return "new";
 	}
 	
@@ -58,7 +60,7 @@ public class DefaultCrudController {
 		return "list";
 	}
 	
-	@RequestMapping(value="/delete/{idCrud}/{pk}", method=RequestMethod.POST)
+	@RequestMapping(value="/load/{idCrud}/{pk}", method=RequestMethod.POST)
 	public String load(@PathVariable String idCrud, @PathVariable Serializable pk, Model model) {
 		String dform = dformManager.load(idCrud, pk, "", "post");
 		model.addAttribute("dform", dform);
