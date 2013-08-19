@@ -53,8 +53,6 @@ public class DFormManagerImpl implements DFormManager {
 			Serializable crud = (Serializable) mapper.readValue(jsonForm, clazz);
 			em.persist(crud);
 			em.flush();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
@@ -73,8 +71,6 @@ public class DFormManagerImpl implements DFormManager {
 			mergeCrud(crudFromDB, crud);
 			em.merge(crud);
 			em.flush();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
@@ -96,14 +92,10 @@ public class DFormManagerImpl implements DFormManager {
 	
 	@Transactional
 	public void delete(String idCrud, Serializable pk) {
-		try {
-			Class<?> clazz = crudRegister.lookupCrud(idCrud);
-			Serializable crudFromDB = (Serializable) em.find(clazz, pk);
-			em.remove(crudFromDB);
-			em.flush();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+		Class<?> clazz = crudRegister.lookupCrud(idCrud);
+		Serializable crudFromDB = (Serializable) em.find(clazz, pk);
+		em.remove(crudFromDB);
+		em.flush();
 	}
 
 	public CrudList list(String idCrud, int offset, int max) {
@@ -119,8 +111,6 @@ public class DFormManagerImpl implements DFormManager {
 			crudList.setRows(rows);
 			
 			return crudList;
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
@@ -135,8 +125,6 @@ public class DFormManagerImpl implements DFormManager {
 			clazz = crudRegister.lookupCrud(idCrud);
 			Serializable obj = (Serializable) em.find(clazz, pk);
 			return dformGenerator.gen(obj, crudRegister.lookupFormMapping(idCrud),action, method);
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
@@ -150,8 +138,6 @@ public class DFormManagerImpl implements DFormManager {
 		try {
 			clazz = crudRegister.lookupCrud(idCrud);
 			return dformGenerator.gen((Serializable)clazz.newInstance(), crudRegister.lookupFormMapping(idCrud),action, method);
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {

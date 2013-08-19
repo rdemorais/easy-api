@@ -13,6 +13,7 @@ import vazdor.form.FormGenExcludeField;
 
 @Entity(name="Atributo")
 @Table(name="tb_atributo_att")
+@VazdorCrud(id="crud1")
 public class CrudTest implements Serializable {
 	/**
 	 * 

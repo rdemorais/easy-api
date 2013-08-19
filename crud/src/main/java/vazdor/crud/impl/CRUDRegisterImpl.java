@@ -1,5 +1,6 @@
 package vazdor.crud.impl;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.stereotype.Component;
@@ -10,30 +11,22 @@ import vazdor.form.FormMapping;
 @Component
 public class CRUDRegisterImpl implements CRUDRegister {
 	
-	private Map<String, String> mapCruds;
-	private Map<String, String> mapFormMap;
+	private Map<String, Class<?>> mapCruds = new HashMap<String, Class<?>>();
+	private Map<String, Class<?>> mapFormMap = new HashMap<String, Class<?>>();
 
-	public Class<?> lookupCrud(String id) throws ClassNotFoundException {
-		return Class.forName(mapCruds.get(id));
+	public Class<?> lookupCrud(String id) {
+		return mapCruds.get(id);
 	}
 	
-	public FormMapping lookupFormMapping(String id) throws ClassNotFoundException, InstantiationException, IllegalAccessException{
-		return (FormMapping) Class.forName(mapFormMap.get(id)).newInstance();
+	public FormMapping lookupFormMapping(String id) throws InstantiationException, IllegalAccessException{
+		return (FormMapping) mapFormMap.get(id).newInstance();
 	}
 
-	public Map<String, String> getMapCruds() {
-		return mapCruds;
+	public void registerCrud(String id, Class<?> crudClass) {
+		mapCruds.put(id, crudClass);
 	}
 
-	public void setMapCruds(Map<String, String> mapCruds) {
-		this.mapCruds = mapCruds;
-	}
-
-	public Map<String, String> getMapFormMap() {
-		return mapFormMap;
-	}
-
-	public void setMapFormMap(Map<String, String> mapFormMap) {
-		this.mapFormMap = mapFormMap;
+	public void registerFormMapping(String id, Class<?> formMapping) {
+		mapFormMap.put(id, formMapping);
 	}
 }
