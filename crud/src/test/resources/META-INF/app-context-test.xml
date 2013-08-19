@@ -18,7 +18,7 @@
 	<!-- Configuração de acesso ao banco -->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		p:driverClassName="org.postgresql.Driver" p:url="jdbc:postgresql://localhost:5432/crud"
-		p:username="postgres" p:password="serenaya" p:initialSize="5"
+		p:username="crud" p:password="serenaya" p:initialSize="5"
 		p:maxActive="10">
 	</bean>
 

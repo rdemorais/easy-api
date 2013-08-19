@@ -1,7 +1,5 @@
 package vazdor.crud.web;
 
-import java.io.Serializable;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,10 +27,8 @@ public class DefaultCrudController {
 	
 	@RequestMapping(value="/new/{idCrud}", method=RequestMethod.GET)
 	public String blankForm(@PathVariable String idCrud, Model model) {
-		System.out.println(dformManager);
 		String dform = dformManager.blankForm(idCrud, "", "post");
 		model.addAttribute("dform", dform);
-		System.out.println("Call");
 		return "new";
 	}
 	
@@ -49,19 +45,20 @@ public class DefaultCrudController {
             method=RequestMethod.POST,
             consumes="application/json",
             produces="application/json")
-	public String update(@PathVariable String idCrud, @RequestBody String jsonForm, @PathVariable Serializable pk) {
+	public String update(@PathVariable String idCrud, @PathVariable Long pk, @RequestBody String jsonForm) {
+		System.out.println(pk.getClass().getCanonicalName());
 		dformManager.update(idCrud, jsonForm, pk);
 		return "list";
 	}
 	
 	@RequestMapping(value="/delete/{idCrud}/{pk}", method=RequestMethod.POST)
-	public String delete(@PathVariable String idCrud, @PathVariable Serializable pk) {
+	public String delete(@PathVariable String idCrud, @PathVariable Long pk) {
 		dformManager.delete(idCrud, pk);
 		return "list";
 	}
 	
 	@RequestMapping(value="/load/{idCrud}/{pk}", method=RequestMethod.POST)
-	public String load(@PathVariable String idCrud, @PathVariable Serializable pk, Model model) {
+	public String load(@PathVariable String idCrud, @PathVariable Long pk, Model model) {
 		String dform = dformManager.load(idCrud, pk, "", "post");
 		model.addAttribute("dform", dform);
 		return "edit";
