@@ -3,7 +3,6 @@ package vazdor.crud.impl;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -18,6 +17,7 @@ import vazdor.crud.CrudListColumn;
 import vazdor.crud.CrudListManager;
 import vazdor.crud.list.Column;
 import vazdor.crud.list.ColumnRow;
+import vazdor.form.FormGenHTMLConfig;
 
 public class CrudListManagerImpl implements CrudListManager {
 	
@@ -59,14 +59,22 @@ public class CrudListManagerImpl implements CrudListManager {
 		return rows;
 	}
 	
-	public List<Column> extractColumnsFromCrud(Class<?> crud, Map<String, String> mapForm) {
+	public List<Column> extractColumnsFromCrud(Class<?> crud) {
 		List<Column> cols = new ArrayList<Column>();
 		Field fields[] = crud.getDeclaredFields();
+		FormGenHTMLConfig htmlConfig = null;
+		String friendlyName = "";
 		for (int i = 0; i < fields.length; i++) {
 			Field field = fields[i];
 			field.setAccessible(true);
+			if(field.isAnnotationPresent(FormGenHTMLConfig.class)){
+				htmlConfig = field.getAnnotation(FormGenHTMLConfig.class);
+				friendlyName = htmlConfig.friendlyName();
+			}else {
+				friendlyName = field.getName();
+			}
 			if(field.isAnnotationPresent(CrudListColumn.class)) {
-				cols.add(new Column(field.getName(), mapForm.get(field.getName()), i));
+				cols.add(new Column(field.getName(), friendlyName, i));
 			}
 		}
 		return cols;

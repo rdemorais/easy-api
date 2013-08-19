@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import vazdor.form.FormGenExcludeField;
+import vazdor.form.FormGenHTMLConfig;
+import vazdor.form.HTMLType;
 
 @Entity(name="Atributo")
 @Table(name="tb_atributo_att")
@@ -28,9 +30,11 @@ public class CrudTest implements Serializable {
 	private Long id;
 	
 	@CrudListColumn
+	@FormGenHTMLConfig(friendlyName="Nome teste", type=HTMLType.INPUT)
 	private String nome;
 	
 	@CrudListColumn
+	@FormGenHTMLConfig(friendlyName="Digite o endereco", type=HTMLType.INPUT)
 	private String endereco;
 	
 	public String getNome() {

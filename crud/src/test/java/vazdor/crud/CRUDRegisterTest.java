@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import vazdor.form.FormMapping;
-
 @ContextConfiguration("/META-INF/app-context-test.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
 public class CRUDRegisterTest {
@@ -23,9 +21,4 @@ public class CRUDRegisterTest {
 		assertEquals(crud1.getCanonicalName(), "vazdor.crud.CrudTest");
 	}
 	
-	@Test
-	public void testCrudRegisterFMLookup() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-		FormMapping crud1FM =  crudRegister.lookupFormMapping("crud1");
-		assertEquals(crud1FM.getClass().getCanonicalName(), "vazdor.crud.CrudTestFormMapping");
-	}
 }

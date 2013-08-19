@@ -24,7 +24,6 @@ import vazdor.crud.list.Column;
 import vazdor.crud.list.ColumnRow;
 import vazdor.crud.list.CrudList;
 import vazdor.form.FormGenerator;
-import vazdor.form.FormMapping;
 
 public class DFormManagerImpl implements DFormManager {
 
@@ -99,45 +98,29 @@ public class DFormManagerImpl implements DFormManager {
 	}
 
 	public CrudList list(String idCrud, int offset, int max) {
-		try {
-			Class<?> clazz = crudRegister.lookupCrud(idCrud);
-			FormMapping formMap = crudRegister.lookupFormMapping(idCrud);
-			List<Column> cols = crudListManager.extractColumnsFromCrud(clazz, formMap.mapForm());
-			List<ColumnRow> rows = crudListManager.loadRows(clazz, cols, offset, max);
-			
-			CrudList crudList = new CrudList();
-			crudList.setCrudId(idCrud);
-			crudList.setColumns(cols);
-			crudList.setRows(rows);
-			
-			return crudList;
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
-		return null;
+		Class<?> clazz = crudRegister.lookupCrud(idCrud);
+		List<Column> cols = crudListManager.extractColumnsFromCrud(clazz);
+		List<ColumnRow> rows = crudListManager.loadRows(clazz, cols, offset, max);
+		
+		CrudList crudList = new CrudList();
+		crudList.setCrudId(idCrud);
+		crudList.setColumns(cols);
+		crudList.setRows(rows);
+		
+		return crudList;
 	}
 
 	public String load(String idCrud, Serializable pk, String action, String method) {
-		Class<?> clazz;
-		try {
-			clazz = crudRegister.lookupCrud(idCrud);
-			Serializable obj = (Serializable) em.find(clazz, pk);
-			return dformGenerator.gen(obj, crudRegister.lookupFormMapping(idCrud),action, method);
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}		
-		return null;
+		Class<?> clazz = crudRegister.lookupCrud(idCrud);
+		Serializable obj = (Serializable) em.find(clazz, pk);
+		return dformGenerator.gen(obj,action, method);
 	}
 
 	public String blankForm(String idCrud, String action, String method) {
 		Class<?> clazz;
 		try {
 			clazz = crudRegister.lookupCrud(idCrud);
-			return dformGenerator.gen((Serializable)clazz.newInstance(), crudRegister.lookupFormMapping(idCrud),action, method);
+			return dformGenerator.gen((Serializable)clazz.newInstance(),action, method);
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
