@@ -1,11 +1,23 @@
 package vazdor.form;
 
+/**
+ * 
+ * @author Rafael de Morais
+ *
+ */
 public enum HTMLType {
-	INPUT("input"), 
-	TEXT_AREA("textArea"), 
+	INPUT("input"),
+	PASSWORD("password"),
+	HIDDEN("hidden"),
+	FILE("file"),
+	TEXT_AREA("text"), 
 	SELECT("select"), 
 	RADIO("radio"), 
-	CHECK("check");
+	CHECK("checkbox"),
+	NUMBER("number"),
+	URL("url"),
+	TEL("tel"),
+	EMAIL("email");
 	
 	private String html;
 	
