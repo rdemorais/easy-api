@@ -46,7 +46,6 @@ public class DefaultCrudController {
             consumes="application/json",
             produces="application/json")
 	public String update(@PathVariable String idCrud, @PathVariable Long pk, @RequestBody String jsonForm) {
-		System.out.println(pk.getClass().getCanonicalName());
 		dformManager.update(idCrud, jsonForm, pk);
 		return "list";
 	}
