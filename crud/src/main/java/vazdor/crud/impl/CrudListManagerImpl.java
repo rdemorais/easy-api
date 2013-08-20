@@ -13,18 +13,23 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
 
-import vazdor.crud.CrudListColumn;
+import org.apache.log4j.Logger;
+
 import vazdor.crud.CrudListManager;
 import vazdor.crud.list.Column;
 import vazdor.crud.list.ColumnRow;
+import vazdor.form.FormGenExcludeField;
 import vazdor.form.FormGenHTMLConfig;
 
 public class CrudListManagerImpl implements CrudListManager {
+	
+	private static final Logger logger = Logger.getLogger(CrudListManagerImpl.class);
 	
 	@PersistenceContext
 	protected EntityManager em;
 	
 	public List<ColumnRow> loadRows(Class<?> crud, List<Column> cols, int offset, int max) {
+		logger.debug("Carregando linhas do banco. Cols: " + cols);
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<Tuple> criteria = builder.createTupleQuery();
 		Root<?> crudRoot = criteria.from(crud);
@@ -51,9 +56,9 @@ public class CrudListManagerImpl implements CrudListManager {
 		for (Tuple tuple : tupleResult) {
 			for (int i = 0; i < cols.size(); i++) {
 				row = new ColumnRow();
-				row.setValue((String)tuple.get(i));
+				row.setValue(tuple.get(i));
 				row.setColumn(cols.get(i));
-				rows.add(row);	
+				rows.add(row);
 			}
 		}
 		return rows;
@@ -73,7 +78,7 @@ public class CrudListManagerImpl implements CrudListManager {
 			}else {
 				friendlyName = field.getName();
 			}
-			if(field.isAnnotationPresent(CrudListColumn.class)) {
+			if(!field.isAnnotationPresent(FormGenExcludeField.class)) {
 				cols.add(new Column(field.getName(), friendlyName, i));
 			}
 		}

@@ -40,4 +40,10 @@ public class Column {
 	public void setOrd(int ord) {
 		this.ord = ord;
 	}
+
+	@Override
+	public String toString() {
+		return "Column [id=" + id + ", nameColumn=" + nameColumn + ", ord="
+				+ ord + "]";
+	}
 }

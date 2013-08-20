@@ -1,13 +1,13 @@
 package vazdor.crud.list;
 
 public class ColumnRow {
-	private String value;
+	private Object value;
 	private Column column;
 
-	public String getValue() {
+	public Object getValue() {
 		return value;
 	}
-	public void setValue(String value) {
+	public void setValue(Object value) {
 		this.value = value;
 	}
 	public Column getColumn() {
