@@ -2,6 +2,7 @@ package vazdor.crud;
 
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,8 @@ import org.springframework.context.ApplicationContextAware;
 
 public class CrudScan implements ApplicationContextAware, InitializingBean{
 
+	private static final Logger logger = Logger.getLogger(CrudScan.class);
+	
 	private ApplicationContext applicationContext;
 	
 	@Autowired
@@ -22,6 +25,7 @@ public class CrudScan implements ApplicationContextAware, InitializingBean{
 			final Class<? extends Object> crudClass = vazdorCrud.getClass();
 			final VazdorCrud anot = crudClass.getAnnotation(VazdorCrud.class);
 			crudRegister.registerCrud(anot.id(), crudClass);
+			logger.debug("Registrando Crud: " + crudClass + " com ID: " + anot.id());
 		}
 	}
 
