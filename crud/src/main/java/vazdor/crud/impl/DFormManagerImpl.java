@@ -15,6 +15,7 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import vazdor.crud.CRUDRegister;
@@ -25,6 +26,7 @@ import vazdor.crud.list.ColumnRow;
 import vazdor.crud.list.CrudList;
 import vazdor.form.FormGenerator;
 
+@Repository
 public class DFormManagerImpl implements DFormManager {
 
 	@Autowired

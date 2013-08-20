@@ -15,7 +15,7 @@
 	<context:component-scan base-package="vazdor.crud">
 		<context:include-filter type="annotation" expression="vazdor.crud.VazdorCrud" />
 	</context:component-scan>
-
+	
 	<context:spring-configured />
 	<context:annotation-config />
 
