@@ -22,8 +22,8 @@ import vazdor.crud.CRUDRegister;
 import vazdor.crud.CrudListManager;
 import vazdor.crud.DFormManager;
 import vazdor.crud.list.Column;
-import vazdor.crud.list.ColumnRow;
 import vazdor.crud.list.CrudList;
+import vazdor.crud.list.Row;
 import vazdor.form.FormGenerator;
 
 @Repository
@@ -102,7 +102,7 @@ public class DFormManagerImpl implements DFormManager {
 	public CrudList list(String idCrud, int offset, int max) {
 		Class<?> clazz = crudRegister.lookupCrud(idCrud);
 		List<Column> cols = crudListManager.extractColumnsFromCrud(clazz);
-		List<ColumnRow> rows = crudListManager.loadRows(clazz, cols, offset, max);
+		List<Row> rows = crudListManager.loadRows(clazz, cols, offset, max);
 		
 		CrudList crudList = new CrudList();
 		crudList.setCrudId(idCrud);

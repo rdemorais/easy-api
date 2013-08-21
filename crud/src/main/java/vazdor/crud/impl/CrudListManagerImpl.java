@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import vazdor.crud.CrudListManager;
 import vazdor.crud.list.Column;
 import vazdor.crud.list.ColumnRow;
+import vazdor.crud.list.Row;
 import vazdor.form.FormGenExcludeField;
 import vazdor.form.FormGenHTMLConfig;
 
@@ -28,7 +29,7 @@ public class CrudListManagerImpl implements CrudListManager {
 	@PersistenceContext
 	protected EntityManager em;
 	
-	public List<ColumnRow> loadRows(Class<?> crud, List<Column> cols, int offset, int max) {
+	public List<Row> loadRows(Class<?> crud, List<Column> cols, int offset, int max) {
 		logger.debug("Carregando linhas do banco. Cols: " + cols);
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<Tuple> criteria = builder.createTupleQuery();
@@ -51,15 +52,18 @@ public class CrudListManagerImpl implements CrudListManager {
 		
 		tupleResult = tq.getResultList();
 
-		ColumnRow row;
-		List<ColumnRow> rows = new ArrayList<ColumnRow>();
+		ColumnRow cRow;
+		List<Row> rows = new ArrayList<Row>();
+		Row row;
 		for (Tuple tuple : tupleResult) {
+			row = new Row();
 			for (int i = 0; i < cols.size(); i++) {
-				row = new ColumnRow();
-				row.setValue(tuple.get(i));
-				row.setColumn(cols.get(i));
-				rows.add(row);
+				cRow = new ColumnRow();
+				cRow.setValue(tuple.get(i));
+				row.addColumnRow(cols.get(i).getId(), cRow);
 			}
+			
+			rows.add(row);
 		}
 		return rows;
 	}

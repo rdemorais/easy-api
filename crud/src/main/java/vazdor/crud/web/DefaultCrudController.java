@@ -22,14 +22,14 @@ public class DefaultCrudController {
 	public String listPage(@PathVariable String idCrud, @PathVariable Integer offset, @PathVariable Integer max, Model model) {
 		CrudList crudList = dformManager.list(idCrud, offset, max);
 		model.addAttribute("crudList", crudList);
-		return "list";
+		return "crud/list";
 	}
 	
 	@RequestMapping(value="/new/{idCrud}", method=RequestMethod.GET)
 	public String blankForm(@PathVariable String idCrud, Model model) {
 		String dform = dformManager.blankForm(idCrud, "", "post");
 		model.addAttribute("dform", dform);
-		return "new";
+		return "crud/new";
 	}
 	
 	@RequestMapping(value="/create/{idCrud}",
@@ -38,7 +38,7 @@ public class DefaultCrudController {
             produces="application/json")
 	public String create(@PathVariable String idCrud, @RequestBody String jsonForm) {
 		dformManager.create(idCrud, jsonForm);
-		return "list";
+		return "crud/list";
 	}
 	
 	@RequestMapping(value="/update/{idCrud}/{pk}",
@@ -47,19 +47,19 @@ public class DefaultCrudController {
             produces="application/json")
 	public String update(@PathVariable String idCrud, @PathVariable Long pk, @RequestBody String jsonForm) {
 		dformManager.update(idCrud, jsonForm, pk);
-		return "list";
+		return "crud/list";
 	}
 	
 	@RequestMapping(value="/delete/{idCrud}/{pk}", method=RequestMethod.POST)
 	public String delete(@PathVariable String idCrud, @PathVariable Long pk) {
 		dformManager.delete(idCrud, pk);
-		return "list";
+		return "crud/list";
 	}
 	
 	@RequestMapping(value="/load/{idCrud}/{pk}", method=RequestMethod.POST)
 	public String load(@PathVariable String idCrud, @PathVariable Long pk, Model model) {
 		String dform = dformManager.load(idCrud, pk, "", "post");
 		model.addAttribute("dform", dform);
-		return "edit";
+		return "crud/edit";
 	}
 }

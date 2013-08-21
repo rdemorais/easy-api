@@ -3,7 +3,7 @@ package vazdor.crud;
 import java.util.List;
 
 import vazdor.crud.list.Column;
-import vazdor.crud.list.ColumnRow;
+import vazdor.crud.list.Row;
 
 public interface CrudListManager {
 	/**
@@ -14,9 +14,9 @@ public interface CrudListManager {
 	 * @param cols as colunas selecionadas para aparecer na lista
 	 * @param offset o inicio dos registros
 	 * @param max o número máximo de registros
-	 * @return A lista {@link ColumnRow} a partir do banco de dados
+	 * @return A lista {@link Row} a partir do banco de dados
 	 */
-	public List<ColumnRow> loadRows(Class<?> crud, List<Column> cols, int offset, int max);
+	public List<Row> loadRows(Class<?> crud, List<Column> cols, int offset, int max);
 	/**
 	 * Extrai as colunas marcadas com a anotação {@link CrudListColumn}
 	 * 

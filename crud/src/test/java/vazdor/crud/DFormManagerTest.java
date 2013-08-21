@@ -21,35 +21,35 @@ public class DFormManagerTest {
 	private String jsonToUpdate = "{\"nome\":\"nome up\"}";
 	
 	@Autowired
-	private DFormManager dFormManager;
+	private DFormManager dformManager;
 	
 	@Test
 	public void testBlankForm() {
-		assertEquals(expected, dFormManager.blankForm("crud1", "action", "post"));
+		assertEquals(expected, dformManager.blankForm("crud1", "action", "post"));
 	}
 	
 	@Test
 	public void testLoad() {
-		System.out.println(dFormManager.load("crud1", 1L, "ac", "post"));
+		System.out.println(dformManager.load("crud1", 1L, "ac", "post"));
 	}
 	
 	@Test
 	public void testList() {
-		System.out.println(dFormManager.list("crud1", 0, 0));
+		System.out.println(dformManager.list("crud1", 0, 0));
 	}
 	
 	@Test
 	public void testCreate() throws JsonGenerationException, JsonMappingException, IOException {
-		dFormManager.create("crud1", jsonToCreate);
+		dformManager.create("crud1", jsonToCreate);
 	}
 	
 	@Test
 	public void testUpdate() {
-		dFormManager.update("crud1", jsonToUpdate, 32768L);
+		dformManager.update("crud1", jsonToUpdate, 32768L);
 	}
 	
 	//@Test
 	public void testDelete() {
-		dFormManager.delete("crud1", 1L);
+		dformManager.delete("crud1", 1L);
 	}
 }
