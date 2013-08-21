@@ -15,6 +15,7 @@ import javax.persistence.criteria.Selection;
 
 import org.apache.log4j.Logger;
 
+import vazdor.crud.CrudListColumn;
 import vazdor.crud.CrudListManager;
 import vazdor.crud.list.Column;
 import vazdor.crud.list.ColumnRow;
@@ -58,6 +59,10 @@ public class CrudListManagerImpl implements CrudListManager {
 		for (Tuple tuple : tupleResult) {
 			row = new Row();
 			for (int i = 0; i < cols.size(); i++) {
+				if(i == 0) {
+					//TODO Melhorar esta parte para identificar automaticamente o id
+					row.setPk(tuple.get(i));
+				}
 				cRow = new ColumnRow();
 				cRow.setValue(tuple.get(i));
 				row.addColumnRow(cols.get(i).getId(), cRow);
@@ -76,14 +81,16 @@ public class CrudListManagerImpl implements CrudListManager {
 		for (int i = 0; i < fields.length; i++) {
 			Field field = fields[i];
 			field.setAccessible(true);
-			if(field.isAnnotationPresent(FormGenHTMLConfig.class)){
-				htmlConfig = field.getAnnotation(FormGenHTMLConfig.class);
-				friendlyName = htmlConfig.friendlyName();
-			}else {
-				friendlyName = field.getName();
-			}
-			if(!field.isAnnotationPresent(FormGenExcludeField.class)) {
-				cols.add(new Column(field.getName(), friendlyName, i));
+			if(field.isAnnotationPresent(CrudListColumn.class)) {
+				if(field.isAnnotationPresent(FormGenHTMLConfig.class)){
+					htmlConfig = field.getAnnotation(FormGenHTMLConfig.class);
+					friendlyName = htmlConfig.friendlyName();
+				}else {
+					friendlyName = field.getName();
+				}
+				if(!field.isAnnotationPresent(FormGenExcludeField.class)) {
+					cols.add(new Column(field.getName(), friendlyName, i));
+				}				
 			}
 		}
 		return cols;
