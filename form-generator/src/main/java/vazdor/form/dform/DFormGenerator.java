@@ -7,6 +7,7 @@ import vazdor.form.DiscoverHTMLType;
 import vazdor.form.FormGenExcludeField;
 import vazdor.form.FormGenHTMLConfig;
 import vazdor.form.FormGenerator;
+import vazdor.form.HTMLType;
 
 /**
  * Recebe um {@link Serializable} e, via reflection, obtem os campos e gera um
@@ -38,14 +39,18 @@ public class DFormGenerator implements FormGenerator<String> {
 				Field f = fields[i];
 				if(!f.isAnnotationPresent(FormGenExcludeField.class)) {
 					f.setAccessible(true);
+					boolean incCaption = true;
 					if(f.isAnnotationPresent(FormGenHTMLConfig.class)) {
 						htmlConfig = f.getAnnotation(FormGenHTMLConfig.class);
 						friendlyName = htmlConfig.friendlyName();
+						if(htmlConfig.type() == HTMLType.HIDDEN) {
+							incCaption = false;
+						}
 					}
 					String name = f.getName();
 					String id = f.getName();
 					String caption;
-					if(!friendlyName.equals("")) {
+					if(!friendlyName.equals("") && incCaption) {
 						caption = friendlyName;
 					}else {
 						caption = f.getName();
