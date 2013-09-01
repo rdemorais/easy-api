@@ -1,6 +1,10 @@
-package vazdor.form;
+package vazdor.form.dform;
 
 import java.io.Serializable;
+
+import vazdor.form.FormGenExcludeField;
+import vazdor.form.FormGenHTMLConfig;
+import vazdor.form.HTMLType;
 
 public class HTMLFieldsPojo implements Serializable {
 

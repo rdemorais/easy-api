@@ -7,7 +7,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import vazdor.form.FormGenerator;
-import vazdor.form.HTMLFieldsPojo;
 
 @ContextConfiguration("/META-INF/app-formgen-context.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
