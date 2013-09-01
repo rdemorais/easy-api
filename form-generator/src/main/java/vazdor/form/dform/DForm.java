@@ -10,6 +10,7 @@ public class DForm implements Serializable{
 
 	private String action;
 	private String method;
+	private String clazz;
 	private List<DFormOutput> html = new ArrayList<DFormOutput>();
 	public String getAction() {
 		return action;
@@ -22,6 +23,12 @@ public class DForm implements Serializable{
 	}
 	public void setMethod(String method) {
 		this.method = method;
+	}
+	public String getClazz() {
+		return clazz;
+	}
+	public void setClazz(String clazz) {
+		this.clazz = clazz;
 	}
 	public List<DFormOutput> getHtml() {
 		return html;
