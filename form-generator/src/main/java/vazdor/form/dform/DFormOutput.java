@@ -17,8 +17,9 @@ public class DFormOutput implements Serializable{
 	private String caption;
 	private String type;
 	private String placeholder;
+	private String value;
 	private Object html;
-	
+
 	public String getId() {
 		return id;
 	}
@@ -54,5 +55,11 @@ public class DFormOutput implements Serializable{
 	}
 	public void setHtml(Object html) {
 		this.html = html;
+	}
+	public String getValue() {
+		return value;
+	}
+	public void setValue(String value) {
+		this.value = value;
 	}
 }

@@ -1,11 +1,17 @@
 package vazdor.form.dform;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import vazdor.form.DiscoverHTMLType;
 import vazdor.form.FormGenExcludeField;
 import vazdor.form.FormGenHTMLConfig;
+import vazdor.form.FormGenStrategyRender;
 import vazdor.form.FormGenerator;
 import vazdor.form.HTMLType;
 
@@ -13,8 +19,8 @@ import vazdor.form.HTMLType;
  * Recebe um {@link Serializable} e, via reflection, obtem os campos e gera um
  * formulário no padrão DForm.
  * 
- * É preciso fornecer um {@link FormMapping} para dizer ao método como capturar o nome
- * amigágel de cada campo.
+ * É preciso fornecer um {@link FormMapping} para dizer ao método como capturar
+ * o nome amigágel de cada campo.
  * 
  * @author Rafael de Morais - 17.08.13
  * 
@@ -22,72 +28,96 @@ import vazdor.form.HTMLType;
 public class DFormGenerator implements FormGenerator<String> {
 
 	private DiscoverHTMLType discoverHtmlType = new DiscoverHTMLType();
-	
+
+	private ObjectMapper mapper;
+
 	public DFormGenerator() {
-		
+		mapper = new ObjectMapper();
 	}
-	
+
 	public String gen(Serializable pojo, String action, String method) {
-		
+		if (pojo.getClass().isAnnotationPresent(FormGenStrategyRender.class)) {
+			FormGenStrategyRender strategyRender = pojo.getClass()
+					.getAnnotation(FormGenStrategyRender.class);
+			switch (strategyRender.strategy()) {
+			case INLINE_FORM:
+				return inlineStrategy(pojo, action, method);
+			case BOOTSTRAP_GROUP:
+				return bootstrapGroupStrategy(pojo, action, method);
+			default:
+				break;
+			}
+		} else {
+			return inlineStrategy(pojo, action, method);
+		}
+		return "";
+	}
+
+	private String bootstrapGroupStrategy(Serializable pojo, String action,
+			String method) {
+		return "";
+	}
+
+	private String inlineStrategy(Serializable pojo, String action,
+			String method) {
 		Field fields[] = pojo.getClass().getDeclaredFields();
-		StringBuffer jsonForm = new StringBuffer(inicio(action, method));
 		String friendlyName = "";
 		FormGenHTMLConfig htmlConfig = null;
-		
-		for (int i = 0; i < fields.length; i++) {
-			try {
+		DForm dForm = new DForm();
+		DFormOutput output;
+		dForm.setAction(action);
+		dForm.setMethod(method);
+
+		try {
+			for (int i = 0; i < fields.length; i++) {
+
 				Field f = fields[i];
-				if(!f.isAnnotationPresent(FormGenExcludeField.class)) {
+				output = new DFormOutput();
+				if (!f.isAnnotationPresent(FormGenExcludeField.class)) {
 					f.setAccessible(true);
 					boolean incCaption = true;
-					if(f.isAnnotationPresent(FormGenHTMLConfig.class)) {
+					if (f.isAnnotationPresent(FormGenHTMLConfig.class)) {
 						htmlConfig = f.getAnnotation(FormGenHTMLConfig.class);
 						friendlyName = htmlConfig.friendlyName();
-						if(htmlConfig.type() == HTMLType.HIDDEN) {
+						if (htmlConfig.type() == HTMLType.HIDDEN) {
 							incCaption = false;
 						}
 					}
-					String name = f.getName();
-					String id = f.getName();
+					output.setName(f.getName());
+					output.setId(f.getName());
 					String caption;
-					if(!friendlyName.equals("") && incCaption) {
+					if (!friendlyName.equals("") && incCaption) {
 						caption = friendlyName;
-					}else {
+					} else {
 						caption = f.getName();
 					}
-					String type = discoverHtmlType.discover(htmlConfig, f.getType());
+					String type = discoverHtmlType.discover(htmlConfig,
+							f.getType());
 					String value = "";
-					if(f.get(pojo) != null) {
-						value = f.get(pojo).toString();					
+					if (f.get(pojo) != null) {
+						value = f.get(pojo).toString();
 					}
-					
-					jsonForm.append(fieldJson(name, id, caption, type, value));
-					
-					if(i < fields.length && i != fields.length -1) {
-						jsonForm.append(",");
-					}
+					output.setCaption(caption);
+					output.setType(type);
+					output.setValue(value);
+
+					dForm.addDFormOutput(output);
 					htmlConfig = null;
 					friendlyName = "";
 				}
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
 			}
+			return mapper.writeValueAsString(dForm);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (JsonGenerationException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		jsonForm.append(fim());
-		return jsonForm.toString();
-	}
-	
-	private String inicio(String action, String method) {
-		return "{'action': '" + action + "', 'method': '"+method+"', 'html': [";
-	}
-	
-	private String fieldJson(String name, String id, String caption, String type, String value) {
-		return "{'name': '" + name + "', 'id': '" + id + "', 'caption': '" + caption + "', 'type': '" + type + "', 'value': '" + value + "'}";
-	}
-	
-	private String fim() {
-		return "]}";
+		return "";
 	}
 }
