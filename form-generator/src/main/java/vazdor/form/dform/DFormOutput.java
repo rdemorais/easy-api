@@ -1,6 +1,8 @@
 package vazdor.form.dform;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Representa a estrutura básica dos componentes. Os objetos desta classe devem ser serializados (JSON)
@@ -18,7 +20,7 @@ public class DFormOutput implements Serializable{
 	private String type;
 	private String placeholder;
 	private String value;
-	private Object html;
+	private List<DFormOutput> html = new ArrayList<DFormOutput>();
 
 	public String getId() {
 		return id;
@@ -50,16 +52,19 @@ public class DFormOutput implements Serializable{
 	public void setPlaceholder(String placeholder) {
 		this.placeholder = placeholder;
 	}
-	public Object getHtml() {
-		return html;
-	}
-	public void setHtml(Object html) {
-		this.html = html;
-	}
 	public String getValue() {
 		return value;
 	}
 	public void setValue(String value) {
 		this.value = value;
+	}
+	public List<DFormOutput> getHtml() {
+		return html;
+	}
+	public void setHtml(List<DFormOutput> html) {
+		this.html = html;
+	}
+	public void addHtml(DFormOutput output) {
+		this.html.add(output);
 	}
 }

@@ -16,8 +16,19 @@ public class DFormGeneratorTest {
 	private FormGenerator<String> dformGenerator;
 	
 	@Test
-	public void testGFormGen() {
+	public void testGFormGenInline() {
 		HTMLFieldsPojo pojo = new HTMLFieldsPojo();
+		pojo.setInputField("value input");
+		pojo.setRadio(true);
+		pojo.setTextArea("text area value");
+		pojo.setToIgnore("");
+		
+		System.out.println(dformGenerator.gen(pojo, "ac", "get"));
+	}
+	
+	@Test
+	public void testGFormGenBootStrap() {
+		HTMLFielsPojoBootStrap pojo = new HTMLFielsPojoBootStrap();
 		pojo.setInputField("value input");
 		pojo.setRadio(true);
 		pojo.setTextArea("text area value");

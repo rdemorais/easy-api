@@ -57,6 +57,71 @@ public class DFormGenerator implements FormGenerator<String> {
 
 	private String bootstrapGroupStrategy(Serializable pojo, String action,
 			String method) {
+		Field fields[] = pojo.getClass().getDeclaredFields();
+		FormGenHTMLConfig htmlConfig = null;
+		String friendlyName = "";
+		DForm dForm = new DForm();
+		DFormOutput output;
+		DFormOutput outCaption;
+		DFormOutput outInnerDiv;
+		DFormOutput outInnerInput;
+		dForm.setAction(action);
+		dForm.setMethod(method);
+		try {
+			for (int i = 0; i < fields.length; i++) {
+				Field f = fields[i];
+				output = new DFormOutput();
+				outCaption = new DFormOutput();
+				outInnerDiv = new DFormOutput();
+				outInnerInput = new DFormOutput();
+				if (!f.isAnnotationPresent(FormGenExcludeField.class)) {
+					f.setAccessible(true);
+					if (f.isAnnotationPresent(FormGenHTMLConfig.class)) {
+						htmlConfig = f.getAnnotation(FormGenHTMLConfig.class);
+						friendlyName = htmlConfig.friendlyName();
+					}
+					
+					output.setType("div");
+					outCaption.setType("label");
+					outCaption.setCaption(friendlyName);
+					outInnerDiv.setType("div");
+					
+					outInnerInput.setName(f.getName());
+					outInnerInput.setId(f.getName());
+					
+					String type = discoverHtmlType.discover(htmlConfig,	f.getType());
+					
+					String value = "";
+					if (f.get(pojo) != null) {
+						value = f.get(pojo).toString();
+					}
+					
+					outInnerInput.setType(type);
+					outInnerInput.setValue(value);
+					
+					outInnerDiv.addHtml(outInnerInput);
+					
+					output.addHtml(outCaption);
+					output.addHtml(outInnerDiv);
+					
+					friendlyName = "";
+					htmlConfig = null;
+					
+					dForm.addDFormOutput(output);
+				}
+			}
+			return mapper.writeValueAsString(dForm);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (JsonGenerationException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return "";
 	}
 
@@ -69,7 +134,6 @@ public class DFormGenerator implements FormGenerator<String> {
 		DFormOutput output;
 		dForm.setAction(action);
 		dForm.setMethod(method);
-
 		try {
 			for (int i = 0; i < fields.length; i++) {
 
