@@ -67,6 +67,7 @@ public class DFormGenerator implements FormGenerator<String> {
 		DFormOutput outInnerInput;
 		dForm.setAction(action);
 		dForm.setMethod(method);
+		dForm.setClazz("form-horizontal");
 		try {
 			for (int i = 0; i < fields.length; i++) {
 				Field f = fields[i];
@@ -82,7 +83,7 @@ public class DFormGenerator implements FormGenerator<String> {
 					}
 					
 					output.setType("div");
-					outCaption.setType("label");
+					outCaption.setType("caption");
 					outCaption.setCaption(friendlyName);
 					outInnerDiv.setType("div");
 					
