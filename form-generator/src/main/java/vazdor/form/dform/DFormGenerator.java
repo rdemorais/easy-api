@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
 import vazdor.form.DiscoverHTMLType;
 import vazdor.form.FormGenExcludeField;
@@ -33,6 +34,7 @@ public class DFormGenerator implements FormGenerator<String> {
 
 	public DFormGenerator() {
 		mapper = new ObjectMapper();
+		mapper.setSerializationInclusion(Inclusion.NON_NULL);
 	}
 
 	public String gen(Serializable pojo, String action, String method) {
