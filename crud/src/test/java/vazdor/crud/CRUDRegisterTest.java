@@ -20,5 +20,4 @@ public class CRUDRegisterTest {
 		Class<?> crud1 =  crudRegister.lookupCrud("crud1");
 		assertEquals(crud1.getCanonicalName(), "vazdor.crud.CrudTest");
 	}
-	
 }
